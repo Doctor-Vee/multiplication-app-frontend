@@ -3,7 +3,7 @@ import { fetchQuizQuestions } from "./API";
 // Components
 import QuestionCard2 from "./components/QuestionCard2";
 // types
-import { QuestionsState} from "./API";
+import { QuestionsState } from "./API";
 // Styles
 import { GlobalStyle, Wrapper } from "./App.styles";
 
@@ -22,12 +22,27 @@ const App: React.FC = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
   const [noOfQuestions, setNoOfQuestions] = useState(10);
-  const [difficulty, setDifficulty] = useState("easy")
-  const [noOfOptions, setNoOfOptions] = useState(4)
+  const [difficulty, setDifficulty] = useState("easy");
+  const [noOfOptions] = useState(4);
+  const [counter, setCounter] = useState(0);
+  const [timer, setTimer] = useState(60);
+  const [noOfQuestionsToLoad, setNoOfQuestionsToLoad] = useState(10);
+
+  React.useEffect(() => {
+    counter > 0 && setTimeout(() => checkAndSetCounter(counter - 1), 1000);
+  }, [counter]);
+
+  const checkAndSetCounter = (counter: number) => {
+    if (counter === 0) {
+      setGameOver(true);
+    }
+    setCounter(counter);
+  };
 
   const startTrivia = async () => {
     setLoading(true);
     setGameOver(false);
+    setNoOfQuestions(noOfQuestionsToLoad);
     const newQuestions = await fetchQuizQuestions(
       noOfQuestions,
       difficulty,
@@ -38,6 +53,7 @@ const App: React.FC = () => {
     setUserAnswers([]);
     setNumber(0);
     setLoading(false);
+    setCounter(timer);
   };
 
   const checkAnswer = (e: number) => {
@@ -74,10 +90,6 @@ const App: React.FC = () => {
     setDifficulty(e.target.value);
   };
 
-  const onNoOfOptionsChange = (e: any) => {
-    setNoOfOptions(e.target.value);
-  };
-
   return (
     <>
       <GlobalStyle />
@@ -85,21 +97,29 @@ const App: React.FC = () => {
         <h1>MULTIPLICATION APP</h1>
         {gameOver || userAnswers.length === noOfQuestions ? (
           <>
+            <label>Timer (in Seconds): </label>
+            <input
+              type="number"
+              className="input"
+              value={timer}
+              onChange={(e) => setTimer(parseInt(e.target.value))}
+            />
+            <br />
             <label>Number of Questions: </label>
             <input
               type="number"
               className="input"
-              value={noOfQuestions}
-              onChange={(e) => setNoOfQuestions(parseInt(e.target.value))}
+              value={noOfQuestionsToLoad}
+              onChange={(e) => setNoOfQuestionsToLoad(parseInt(e.target.value))}
             />
             <br />
             <label>Difficulty: </label>
             <div onChange={onDifficultyChange}>
-              <input type="radio" value="easy" name="difficulty" />{" "}
-              <label>Easy</label>
-              <input type="radio" value="medium" name="difficulty" />{" "}
-              <label>Medium</label>
-              <input type="radio" value="hard" name="difficulty" />{" "}
+              <input type="radio" value="easy" name="difficulty" />
+              <label>Easy </label>
+              <input type="radio" value="medium" name="difficulty" />
+              <label>Medium </label>
+              <input type="radio" value="hard" name="difficulty" />
               <label>Hard</label>
             </div>
             <button className="start" onClick={startTrivia}>
@@ -107,17 +127,24 @@ const App: React.FC = () => {
             </button>
           </>
         ) : null}
-        {!gameOver ? <p className="score">Score: {score} / {noOfQuestions} </p> : null}
+        <p className="score">
+          Score: {score} / {noOfQuestions}{" "}
+        </p>
         {loading ? <p>Loading Questions...</p> : null}
         {!loading && !gameOver && (
-          <QuestionCard2
-            questionNr={number + 1}
-            totalQuestions={noOfQuestions}
-            question={questions[number].question}
-            answers={questions[number].answers}
-            userAnswer={userAnswers ? userAnswers[number] : undefined}
-            callback={checkAnswer}
-          />
+          <>
+            <div className="score">
+              <p>Countdown: {counter}</p>
+            </div>
+            <QuestionCard2
+              questionNr={number + 1}
+              totalQuestions={noOfQuestions}
+              question={questions[number].question}
+              answers={questions[number].answers}
+              userAnswer={userAnswers ? userAnswers[number] : undefined}
+              callback={checkAnswer}
+            />
+          </>
         )}
         {!gameOver &&
         !loading &&

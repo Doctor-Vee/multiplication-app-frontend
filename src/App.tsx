@@ -40,7 +40,6 @@ const App: React.FC = () => {
   };
 
   const startTrivia = async () => {
-    console.log(noOfQuestionsToLoad);
     setLoading(true);
     setGameOver(false);
     setNoOfQuestions(noOfQuestionsToLoad);
@@ -142,11 +141,9 @@ const App: React.FC = () => {
             </button>
           </>
         ) : null}
-        {/* {!gameOver ? ( */}
         <p className="score">
           Score: {score} / {noOfQuestions}{" "}
         </p>
-        {/* ) : null} */}
 
         {loading ? <p>Loading Questions...</p> : null}
         {!loading && !gameOver && (
