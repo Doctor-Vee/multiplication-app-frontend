@@ -74,4 +74,8 @@ export const Wrapper = styled.div`
   span.wrong {
     color: red;
   }
+
+  label {
+    color: white;
+  }
 `;

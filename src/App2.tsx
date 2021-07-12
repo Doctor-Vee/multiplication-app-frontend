@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { fetchQuizQuestions } from './API';
+import React, { useState } from "react";
+import { fetchQuizQuestions } from "./API";
 // Components
-import QuestionCard2 from './components/QuestionCard2';
+import QuestionCard2 from "./components/QuestionCard2";
 // types
-import { QuestionsState, Difficulty } from './API';
+import { QuestionsState} from "./API";
 // Styles
-import { GlobalStyle, Wrapper } from './App.styles';
+import { GlobalStyle, Wrapper } from "./App.styles";
 
 export type AnswerObject = {
   question: string;
@@ -14,8 +14,6 @@ export type AnswerObject = {
   correctAnswer: number;
 };
 
-const TOTAL_QUESTIONS = 10;
-
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<QuestionsState[]>([]);
@@ -23,13 +21,17 @@ const App: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
+  const [noOfQuestions, setNoOfQuestions] = useState(10);
+  const [difficulty, setDifficulty] = useState("easy")
+  const [noOfOptions, setNoOfOptions] = useState(4)
 
   const startTrivia = async () => {
     setLoading(true);
     setGameOver(false);
     const newQuestions = await fetchQuizQuestions(
-      TOTAL_QUESTIONS,
-      Difficulty.EASY
+      noOfQuestions,
+      difficulty,
+      noOfOptions
     );
     setQuestions(newQuestions);
     setScore(0);
@@ -61,11 +63,19 @@ const App: React.FC = () => {
     // Move on to the next question if not the last question
     const nextQ = number + 1;
 
-    if (nextQ === TOTAL_QUESTIONS) {
+    if (nextQ === noOfQuestions) {
       setGameOver(true);
     } else {
       setNumber(nextQ);
     }
+  };
+
+  const onDifficultyChange = (e: any) => {
+    setDifficulty(e.target.value);
+  };
+
+  const onNoOfOptionsChange = (e: any) => {
+    setNoOfOptions(e.target.value);
   };
 
   return (
@@ -73,25 +83,47 @@ const App: React.FC = () => {
       <GlobalStyle />
       <Wrapper>
         <h1>MULTIPLICATION APP</h1>
-        {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
-          <button className='start' onClick={startTrivia}>
-            Start
-          </button>
+        {gameOver || userAnswers.length === noOfQuestions ? (
+          <>
+            <label>Number of Questions: </label>
+            <input
+              type="number"
+              className="input"
+              value={noOfQuestions}
+              onChange={(e) => setNoOfQuestions(parseInt(e.target.value))}
+            />
+            <br />
+            <label>Difficulty: </label>
+            <div onChange={onDifficultyChange}>
+              <input type="radio" value="easy" name="difficulty" />{" "}
+              <label>Easy</label>
+              <input type="radio" value="medium" name="difficulty" />{" "}
+              <label>Medium</label>
+              <input type="radio" value="hard" name="difficulty" />{" "}
+              <label>Hard</label>
+            </div>
+            <button className="start" onClick={startTrivia}>
+              Start
+            </button>
+          </>
         ) : null}
-        {!gameOver ? <p className='score'>Score: {score}</p> : null}
+        {!gameOver ? <p className="score">Score: {score} / {noOfQuestions} </p> : null}
         {loading ? <p>Loading Questions...</p> : null}
         {!loading && !gameOver && (
           <QuestionCard2
             questionNr={number + 1}
-            totalQuestions={TOTAL_QUESTIONS}
+            totalQuestions={noOfQuestions}
             question={questions[number].question}
             answers={questions[number].answers}
             userAnswer={userAnswers ? userAnswers[number] : undefined}
             callback={checkAnswer}
           />
         )}
-        {!gameOver && !loading && userAnswers.length === number + 1 && number !== TOTAL_QUESTIONS - 1 ? (
-          <button className='next' onClick={nextQuestion}>
+        {!gameOver &&
+        !loading &&
+        userAnswers.length === number + 1 &&
+        number !== noOfQuestions - 1 ? (
+          <button className="next" onClick={nextQuestion}>
             Next Question
           </button>
         ) : null}
