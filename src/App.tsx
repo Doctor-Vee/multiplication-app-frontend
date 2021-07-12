@@ -120,21 +120,21 @@ const App: React.FC = () => {
             <br />
             <label>Difficulty: </label>
             <div onChange={onDifficultyChange}>
-              <input type="radio" value="easy" name="difficulty" />{" "}
-              <label>Easy</label>
-              <input type="radio" value="medium" name="difficulty" />{" "}
-              <label>Medium</label>
-              <input type="radio" value="hard" name="difficulty" />{" "}
+              <input type="radio" value="easy" name="difficulty" />
+              <label>Easy </label>
+              <input type="radio" value="medium" name="difficulty" />
+              <label>Medium </label>
+              <input type="radio" value="hard" name="difficulty" />
               <label>Hard</label>
             </div>
             <br />
             <label>Number of Options per question: </label>
             <div onChange={onNoOfOptionsChange}>
-              <input type="radio" value="3" name="noOfOptions" />{" "}
-              <label>3</label>
-              <input type="radio" value="4" name="noOfOptions" />{" "}
-              <label>4</label>
-              <input type="radio" value="5" name="noOfOptions" />{" "}
+              <input type="radio" value="3" name="noOfOptions" />
+              <label>3 </label>
+              <input type="radio" value="4" name="noOfOptions" />
+              <label>4 </label>
+              <input type="radio" value="5" name="noOfOptions" />
               <label>5</label>
             </div>
             <button className="start" onClick={startTrivia}>
