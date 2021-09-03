@@ -13,7 +13,7 @@ export type QuestionsState = Question & { answers: number[] };
 
 export const fetchQuizQuestions = async (amount: number, difficulty: string, noOfOptions: number): Promise<QuestionsState[]> => {
   // const endpoint = `http://localhost:7600/multiplication/questions?difficulty=${difficulty}&noOfQuestions=${amount}&noOfAnswers=${noOfOptions}`;
-  const endpoint = ` http://vee-multiplication-app.us-east-1.elasticbeanstalk.com/multiplication/questions?difficulty=${difficulty}&noOfQuestions=${amount}&noOfAnswers=${noOfOptions}`;
+  const endpoint = `http://vee-multiplication-app.us-east-1.elasticbeanstalk.com/multiplication/questions?difficulty=${difficulty}&noOfQuestions=${amount}&noOfAnswers=${noOfOptions}`;
   console.log(endpoint);
   const data = await (await fetch(endpoint)).json();
   console.log(data)
